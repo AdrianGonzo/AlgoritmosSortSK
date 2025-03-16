@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Algoritmos Sort</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .container { display: flex; justify-content: center; align-items: flex-end; height: 300px; }
+        .bar { fill: blue; }
+        button { margin: 10px; padding: 10px}
+        svg { transform: translateY(0px); }
+    </style>
+</head>
+<body>
+    <h2>Visualizador de Algoritmos de Ordenamiento</h2>
+    <svg width="1000" height="600" id="chart"></svg>
+    <br>
+    <button onclick="generateBars()" style="background-color: chartreuse">Generar</button>
+    <button onclick="selectionSort()">Selection Sort</button>
+    <button>Insertion Sort</button>
+    <button>Shell Sort</button>
+    <button onclick="bubbleSort()">Bubble Sort</button>
+    <button>Merge Sort</button>
+    <button>Quick Sort</button>
+    <script>
+        let array = [];
+        const svg = d3.select("#chart");
+
+        function generateBars() {
+            array = Array.from({length: 33}, () => Math.floor(Math.random() * 200) + 1);
+            svg.selectAll("rect").remove();
+            svg.selectAll("rect")
+                .data(array)
+                .enter()
+                .append("rect")
+                .attr("x", (d, i) => i * 30)
+                .attr("y", d => 600 - d * 2)
+                .attr("width", 25)
+                .attr("height", d => d * 2)
+                .attr("fill", "blue");
+        }
+
+        async function bubbleSort() {
+            for (let i = 0; i < array.length; i++) {
+                for (let j = 0; j < array.length - i - 1; j++) {
+                    svg.selectAll("rect")
+                        .attr("fill", (d, idx) => (idx === j || idx === j + 1) ? "red" : "blue");
+                    
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    if (array[j] > array[j + 1]) {
+                        [array[j], array[j + 1]] = [array[j + 1], array[j]];
+                        updateBars();
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                    }
+                }
+            }
+        }
+
+        async function selectionSort(){
+            for (let i = 0; i<array.length; i++){
+                let min = i;
+                for (let j = i+1;j<array.length;j++){
+                    svg.selectAll("rect")
+                    .attr("fill", (d, idx) => (idx === i || idx === j) ? "red" : "blue");
+                    
+                    await new Promise(resolve => setTimeout(resolve, 100))
+                    if(array[j]<array[min]){
+                        min = j;
+                    }
+                }
+                [array[i], array[min]] = [array[min], array[i]];
+                updateBars();
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+        }
+
+        function updateBars() {
+            svg.selectAll("rect")
+                .data(array)
+                .transition()
+                .duration(100)
+                .attr("y", d => 600 - d * 2)
+                .attr("height", d => d * 2);
+        }
+
+        generateBars();
+    </script>
+</body>
+</html>
