@@ -17,12 +17,11 @@
     <h2>Visualizador de Algoritmos de Ordenamiento</h2>
     <svg width="1000" height="600" id="chart"></svg>
     <br>
-    <button onclick="generateBars()" style="background-color: chartreuse">Generar</button>
+    <button onclick="generateBars(), updateBars()" style="background-color: chartreuse">Generar</button>
     <button onclick="selectionSort()">Selection Sort</button>
     <button>Insertion Sort</button>
     <button>Shell Sort</button>
     <button>Merge Sort</button>
-    <button>Quick Sort</button>
     <script>
         let array = [];
         const svg = d3.select("#chart");
@@ -39,6 +38,28 @@
                 .attr("width", 25)
                 .attr("height", d => d * 2)
                 .attr("fill", "blue");
+
+                svg.selectAll(".value-label")
+                .data(array)
+                .enter()
+                .append("text")
+                .attr("class", "value-label")
+                .attr("x", (d, i) => i * 30 + 12)
+                .attr("y", d => 575 - d * 2 - 5)
+                .attr("text-anchor", "middle")
+                .attr("fill", "black")
+                .text(d => d);
+                
+                svg.selectAll(".index-label")
+                .data(array)
+                .enter()
+                .append("text")
+                .attr("class", "index-label")
+                .attr("x", (d, i) => i * 30 + 12)
+                .attr("y", 600)
+                .attr("text-anchor", "middle")
+                .attr("fill", "black")
+                .text((d, i) => i);
 
         }
 
@@ -81,8 +102,16 @@
                 .data(array)
                 .transition()
                 .duration(100)
-                .attr("y", d => 600 - d * 2)
+                .attr("y", d => 575 - d * 2)
                 .attr("height", d => d * 2);
+
+            svg.selectAll(".value-label")
+                .data(array)
+                .transition()
+                .duration(200)
+                .attr("x", (d, i) => i * 30 + 12)
+                .attr("y", d => 575 - d * 2 - 5)
+                .text(d => d);
         }
 
         generateBars();
