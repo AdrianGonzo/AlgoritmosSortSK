@@ -22,12 +22,17 @@
     <button>Insertion Sort</button>
     <button>Shell Sort</button>
     <button>Merge Sort</button>
+    <p id="stats">Tiempo: 0 ms | Intercambios: 0</p>
     <script>
         let array = [];
+        let swapCount = 0;
         const svg = d3.select("#chart");
+        const statsDisplay = document.getElementById("stats");
 
         function generateBars() {
             array = Array.from({length: 33}, () => Math.floor(Math.random() * 200) + 1);
+            swapCount = 0;
+            statsDisplay.textContent = "Tiempo: 0 ms | Intercambios: 0";
             svg.selectAll("rect").remove();
             svg.selectAll("rect")
                 .data(array)
@@ -79,40 +84,53 @@
             }
         } Codigo de referencia*/
 
-        async function selectionSort(){
-            for (let i = 0; i<array.length; i++){
+        async function selectionSort() {
+            let startTime = performance.now();
+            swapCount = 0;
+
+            for (let i = 0; i < array.length; i++) {
                 let min = i;
-                for (let j = i+1;j<array.length;j++){
+                for (let j = i + 1; j < array.length; j++) {
                     svg.selectAll("rect")
-                    .attr("fill", (d, idx) => (idx === i || idx === j) ? "red" : "blue");
-                    
-                    await new Promise(resolve => setTimeout(resolve, 100))
-                    if(array[j]<array[min]){
+                        .attr("fill", (d, idx) => (idx === i || idx === j) ? "red" : "blue");
+                    await new Promise(resolve => setTimeout(resolve, 100));
+
+                    if (array[j] < array[min]) {
                         min = j;
                     }
                 }
-                [array[i], array[min]] = [array[min], array[i]];
-                updateBars();
-                await new Promise(resolve => setTimeout(resolve, 100));
+                if (min !== i) {
+                    [array[i], array[min]] = [array[min], array[i]];
+                    swapCount++;
+                    await updateBars();
+                }
+                svg.selectAll("rect").attr("fill", "blue");
             }
+    
+            let endTime = performance.now();
+            statsDisplay.textContent = `Tiempo: ${(endTime - startTime).toFixed(2)} ms | Intercambios: ${swapCount}`;
         }
 
         function updateBars() {
-            svg.selectAll("rect")
-                .data(array)
-                .transition()
-                .duration(100)
-                .attr("y", d => 575 - d * 2)
-                .attr("height", d => d * 2);
+            return new Promise(resolve => {
+                svg.selectAll("rect")
+                    .data(array)
+                    .transition()
+                    .duration(100)
+                    .attr("y", d => 575 - d * 2)
+                    .attr("height", d => d * 2);
 
-            svg.selectAll(".value-label")
-                .data(array)
-                .transition()
-                .duration(200)
-                .attr("x", (d, i) => i * 30 + 12)
-                .attr("y", d => 575 - d * 2 - 5)
-                .text(d => d);
-        }
+                svg.selectAll(".value-label")
+                    .data(array)
+                    .transition()
+                    .duration(200)
+                    .attr("x", (d, i) => i * 30 + 12)
+                    .attr("y", d => 575 - d * 2 - 5)
+                    .text(d => d);
+
+                setTimeout(resolve, 200);
+        });
+    }
 
         generateBars();
     </script>
