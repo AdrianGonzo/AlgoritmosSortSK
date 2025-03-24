@@ -21,7 +21,6 @@
     <button onclick="selectionSort()">Selection Sort</button>
     <button>Insertion Sort</button>
     <button>Shell Sort</button>
-    <button onclick="bubbleSort()">Bubble Sort</button>
     <button>Merge Sort</button>
     <button>Quick Sort</button>
     <script>
@@ -36,13 +35,14 @@
                 .enter()
                 .append("rect")
                 .attr("x", (d, i) => i * 30)
-                .attr("y", d => 600 - d * 2)
+                .attr("y", d => 575 - d * 2)
                 .attr("width", 25)
                 .attr("height", d => d * 2)
                 .attr("fill", "blue");
+
         }
 
-        async function bubbleSort() {
+        /*async function bubbleSort() {
             for (let i = 0; i < array.length; i++) {
                 for (let j = 0; j < array.length - i - 1; j++) {
                     svg.selectAll("rect")
@@ -56,7 +56,7 @@
                     }
                 }
             }
-        }
+        } Codigo de referencia*/
 
         async function selectionSort(){
             for (let i = 0; i<array.length; i++){
